@@ -41,8 +41,8 @@ def main():
 
     #------------------------------------------------------------------#
 
-    origin=Node(stationList[4],None)                    # Charpennes L2
-    destination=Node(stationList[3],None)               # Dauphine Lacassagne L4
+    origin=Node(stationList[5],None)                    # Charpennes L2
+    destination=Node(stationList[13],None)               # Dauphine Lacassagne L4
 
     #------------------------------------------------------------------#
 

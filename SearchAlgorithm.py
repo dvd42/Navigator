@@ -10,6 +10,7 @@ __group__='DL01'
 # _______________________________________________________________________________________
 
 from SubwayMap import *
+from SubwayMap import *
 
 
 
@@ -33,7 +34,7 @@ class Node:
         else:
 			self.parentsID = [father.station.id]
 			self.parentsID.extend(father.parentsID)         # TUPLE OF NODES (from the origin to its father)
-        self.father = father        # NODE pointer to his father
+        self.father = father                                 # NODE pointer to his father
         self.time = 0               # REAL time required to get from the origin to this Node
                                     # [optional] Only useful for GUI
         self.num_stopStation = 0    # INTEGER number of stops stations made from the origin to this Node
@@ -65,6 +66,9 @@ class Node:
                 - city: CITYINFO with the information of the city (see CityInfo class definition)
         """
         
+        #Time Preference
+        self.h = 0
+        
         if typePreference == 1:
             distance1 = self.station.x + self.station.y
             distance2 = node_destination.station.x + node_destination.station.y
@@ -73,12 +77,33 @@ class Node:
         
             if self.station.line != node_destination.station.line:
                 self.h += city.min_transfer
+        
+        #Distance Preference        
+        elif typePreference == 2:
+            distance1 = self.station.x + self.station.y
+            distance2 = node_destination.station.x + node_destination.station.y
+            
+            self.h = abs(distance1 - distance2)
            
+        elif typePreference == 3: 
+           if self.station.line != node_destination.station.line:
+                self.h +=1
+                
+        else:
+            distance1 = self.station.x + self.station.y
+            distance2 = node_destination.station.x + node_destination.station.y
+            
+            if self.station.name == node_destination.station.name:
+                self.h = 0
+            elif abs(distance1 - distance2) >= 100 :
+                self.h = 2
+            else:
+                self.h = 1
         
+            #TODO what to do if not heuristic?
+            
         
-       
-        
-        #elif typePreference == 2:
+
             
                 
 
@@ -86,10 +111,11 @@ class Node:
         """
         setRealCost: 	Calculates the real cost depending on the preference selected
         :params
-                 - costTable: DICTIONARY. Relates each station with their adjacency an their real cost. NOTE that this
+                 - costTable: DICTIONARY. Relates each station with their adjacency and their real cost. NOTE that this
                              cost can be in terms of any preference.
         """
-
+        
+        
 
 
 
@@ -159,7 +185,7 @@ def sorted_insertion(nodeList,childrenList):
                 - nodeList: sorted LIST of NODES to be visited updated with the childrenList included 
 	"""
 
-
+    return
 
 def setCostTable( typePreference, stationList,city):
     """
@@ -177,7 +203,12 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
-
+    if typePreference == 1:
+        for station in stationList:
+            
+          return
+     
+    
 
 
 
@@ -193,7 +224,7 @@ def coord2station(coord, stationList):
             station
     """
 
-	
+	return
 
 def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,city,flag_redundants):
     """
@@ -232,5 +263,5 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
             min_distance_destination
     """
 
-
+    return
 
