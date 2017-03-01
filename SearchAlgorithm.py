@@ -66,14 +66,17 @@ class Node:
                 - city: CITYINFO with the information of the city (see CityInfo class definition)
         """
         
-        #Time Preference
+        
         self.h = 0
         
+        #TODO cambiar a euclidiana
+        
+        #Time Preference
         if typePreference == 1:
             distance1 = self.station.x + self.station.y
             distance2 = node_destination.station.x + node_destination.station.y
             
-            self.h = abs(distance1 - distance2)/city.max_velocity #TODO use float values (use velocity mean instead of max)                
+            self.h = abs(distance1 - distance2)/city.max_velocity       
         
             if self.station.line != node_destination.station.line:
                 self.h += city.min_transfer
@@ -85,11 +88,13 @@ class Node:
             
             self.h = abs(distance1 - distance2)
            
+        #Transfers Preference
         elif typePreference == 3: 
            if self.station.line != node_destination.station.line:
                 self.h +=1
-                
-        else:
+        
+        #Stops Preference
+        elif typePreference == 4:
             distance1 = self.station.x + self.station.y
             distance2 = node_destination.station.x + node_destination.station.y
             
@@ -100,10 +105,10 @@ class Node:
             else:
                 self.h = 1
         
-            #TODO what to do if not heuristic?
-            
+        #Null heuristic
+        else:
+            self.h = None        
         
-
             
                 
 
@@ -185,7 +190,6 @@ def sorted_insertion(nodeList,childrenList):
                 - nodeList: sorted LIST of NODES to be visited updated with the childrenList included 
 	"""
 
-    return
 
 def setCostTable( typePreference, stationList,city):
     """
@@ -203,14 +207,16 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
-    if typePreference == 1:
-        for station in stationList:
-            
-          return
-     
-    
-
-
+    costTable = {}
+    for station in city.adjacency.keys():
+        costTable[station] = {}
+        for node in city.adjacency[station].keys():
+            if typePreference == 1:
+               costTable[station][node] = stationList[station - 1].destinationDic[node]
+               
+            elif typePreference == 2:
+  #TODO arreglar esta linea              costTable[station][node] = city.velocity_lines[station - 1] * stationList[station - 1].destinationDic[node]
+                pass
 
 def coord2station(coord, stationList):
     """
@@ -224,7 +230,6 @@ def coord2station(coord, stationList):
             station
     """
 
-	return
 
 def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,city,flag_redundants):
     """
