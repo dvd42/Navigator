@@ -11,7 +11,7 @@ __group__='DL01'
 
 from SubwayMap import *
 from SubwayMap import *
-
+import math as m
 
 
 class Node:
@@ -69,24 +69,23 @@ class Node:
         
         self.h = 0
         
-        #TODO cambiar a euclidiana
         
         #Time Preference
         if typePreference == 1:
-            distance1 = self.station.x + self.station.y
-            distance2 = node_destination.station.x + node_destination.station.y
+            distance1 = (self.station.x - node_destination.station.x)**2
+            distance2 = (self.station.y - node_destination.station.y)**2
             
-            self.h = abs(distance1 - distance2)/city.max_velocity       
+            self.h = m.sqrt(distance1 + distance2)/city.max_velocity       
         
             if self.station.line != node_destination.station.line:
                 self.h += city.min_transfer
         
         #Distance Preference        
         elif typePreference == 2:
-            distance1 = self.station.x + self.station.y
-            distance2 = node_destination.station.x + node_destination.station.y
+            distance1 = (self.station.x - node_destination.station.x)**2
+            distance2 = (self.station.y - node_destination.station.y)**2
             
-            self.h = abs(distance1 - distance2)
+            self.h = m.sqrt(distance1 + distance2)
            
         #Transfers Preference
         elif typePreference == 3: 
@@ -95,13 +94,8 @@ class Node:
         
         #Stops Preference
         elif typePreference == 4:
-            distance1 = self.station.x + self.station.y
-            distance2 = node_destination.station.x + node_destination.station.y
-            
             if self.station.name == node_destination.station.name:
                 self.h = 0
-            elif abs(distance1 - distance2) >= 100 :
-                self.h = 2
             else:
                 self.h = 1
         
@@ -119,7 +113,8 @@ class Node:
                  - costTable: DICTIONARY. Relates each station with their adjacency and their real cost. NOTE that this
                              cost can be in terms of any preference.
         """
-        
+        if self.father != None:
+             self.g = costTable[self.father.station.id][self.station.id] + self.father.g
         
 
 
@@ -207,17 +202,41 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
+    if typePreference == 0:
+        return city.adjacency
+    
     costTable = {}
-    for station in city.adjacency.keys():
-        costTable[station] = {}
-        for node in city.adjacency[station].keys():
+    for origin in city.adjacency.keys():
+        costTable[origin] = {}
+        for dest in city.adjacency[origin].keys():
+            
+            #Real cost in time
             if typePreference == 1:
-               costTable[station][node] = stationList[station - 1].destinationDic[node]
-               
+                # Returns real cost in time from origin to destination        
+               costTable[origin][dest] = stationList[origin - 1].destinationDic[dest] 
+            
+            #Real cost in distance
             elif typePreference == 2:
-  #TODO arreglar esta linea              costTable[station][node] = city.velocity_lines[station - 1] * stationList[station - 1].destinationDic[node]
-                pass
-
+                time = stationList[origin - 1].destinationDic[dest]
+                # Returns real cost in distance from origin to destination
+                costTable[origin][dest] = city.velocity_lines[stationList[origin - 1].line -1] * time 
+            
+            #Real cost in number of transfers
+            elif typePreference == 3:
+                if stationList[origin - 1].line != stationList[dest -1].line:
+                    costTable[origin][dest] = 1    
+                else:
+                    costTable[origin][dest] = 0
+            
+            #Real cost in number of stops            
+            else:
+                if stationList[origin - 1].name != stationList[dest -1].name:
+                    costTable[origin][dest] = 1
+                    
+                else:
+                    costTable[origin][dest] = 0
+                
+                
 def coord2station(coord, stationList):
     """
     coord2station :      From coordinates, it searches the closest station.
