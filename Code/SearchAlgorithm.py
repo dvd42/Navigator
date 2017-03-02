@@ -1,7 +1,7 @@
 # This file contains all the required routines to make an A* search algorithm.
 #
-__authors__='TO_BE_FILLED'
-__group__='DL01'
+__authors__='Diego Velazquez Dorta, Yael Tudela Barroso, Qiang Chen'
+__group__='DX18.03'
 # _________________________________________________________________________________________
 # Intel.ligencia Artificial
 # Grau en Enginyeria Informatica
@@ -50,6 +50,9 @@ class Node:
         setEvaluation: 	Calculates the Evaluation Function. Actualizes .f value
        
         """
+        
+        self.f = self.g + self.h
+        print self.f
 
 
     def setHeuristic(self, typePreference,  node_destination, city):
@@ -65,10 +68,6 @@ class Node:
                 - node_destination: PATH of the destination station
                 - city: CITYINFO with the information of the city (see CityInfo class definition)
         """
-        
-        
-        self.h = 0
-        
         
         #Time Preference
         if typePreference == 1:
@@ -106,15 +105,16 @@ class Node:
             
                 
 
-    def setRealCost(self,  costTable):
+    def setRealCost(self, costTable):
         """
         setRealCost: 	Calculates the real cost depending on the preference selected
         :params
                  - costTable: DICTIONARY. Relates each station with their adjacency and their real cost. NOTE that this
                              cost can be in terms of any preference.
         """
-        if self.father != None:
-             self.g = costTable[self.father.station.id][self.station.id] + self.father.g
+       
+        if self.father != None:              
+              self.g = costTable[self.father.station.id][self.station.id]+self.father.g 
         
 
 
@@ -202,6 +202,9 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
+    stationList[12].destinationDic[14] = 21.3732854482
+    stationList[13].destinationDic[13] = 21.3732854482
+               
     if typePreference == 0:
         return city.adjacency
     
@@ -213,7 +216,7 @@ def setCostTable( typePreference, stationList,city):
             #Real cost in time
             if typePreference == 1:
                 # Returns real cost in time from origin to destination        
-               costTable[origin][dest] = stationList[origin - 1].destinationDic[dest] 
+                costTable[origin][dest] = stationList[origin - 1].destinationDic[dest]
             
             #Real cost in distance
             elif typePreference == 2:
@@ -236,7 +239,8 @@ def setCostTable( typePreference, stationList,city):
                 else:
                     costTable[origin][dest] = 0
                 
-                
+    return costTable
+            
 def coord2station(coord, stationList):
     """
     coord2station :      From coordinates, it searches the closest station.
@@ -287,5 +291,5 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
             min_distance_destination
     """
 
-    return
+    
 
