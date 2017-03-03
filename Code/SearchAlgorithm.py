@@ -139,6 +139,8 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
                 - childrenList:  LIST of the set of child Nodes for this current node (fatherNode)
 
     """
+    
+    
 
 
 
