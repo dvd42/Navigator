@@ -52,9 +52,7 @@ class Node:
         """
         
         self.f = self.g + self.h
-        print self.f
-
-
+        
     def setHeuristic(self, typePreference,  node_destination, city):
         """"
         setHeuristic: 	Calculates the heuristic depending on the preference selected
@@ -89,7 +87,9 @@ class Node:
         #Transfers Preference
         elif typePreference == 3: 
            if self.station.line != node_destination.station.line:
-                self.h +=1
+                self.h = 1
+           else:
+               self.h = 0
         
         #Stops Preference
         elif typePreference == 4:
@@ -202,9 +202,11 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
-    stationList[12].destinationDic[14] = 21.3732854482
+    #TODO find out why these values are changed
+    stationList[12].destinationDic[14] = 21.3732854482  
     stationList[13].destinationDic[13] = 21.3732854482
-               
+                
+                 
     if typePreference == 0:
         return city.adjacency
     
@@ -213,26 +215,28 @@ def setCostTable( typePreference, stationList,city):
         costTable[origin] = {}
         for dest in city.adjacency[origin].keys():
             
-            #Real cost in time
             if typePreference == 1:
-                # Returns real cost in time from origin to destination        
+                # Returns real cost in time from origin to dest        
                 costTable[origin][dest] = stationList[origin - 1].destinationDic[dest]
             
-            #Real cost in distance
             elif typePreference == 2:
-                time = stationList[origin - 1].destinationDic[dest]
-                # Returns real cost in distance from origin to destination
-                costTable[origin][dest] = city.velocity_lines[stationList[origin - 1].line -1] * time 
-            
-            #Real cost in number of transfers
+                # We consider line trasnfers within a same station to have a distance of 0
+                if stationList[origin - 1].name == stationList[dest - 1].name:
+                    costTable[origin][dest] = 0             
+                else:             
+                    # Returns real cost in distance from origin to dest
+                    time = stationList[origin - 1].destinationDic[dest]
+                    costTable[origin][dest] = city.velocity_lines[stationList[origin - 1].line -1] * time
+                
             elif typePreference == 3:
+                #Returns real cost in number of transfers from orgin to dest
                 if stationList[origin - 1].line != stationList[dest -1].line:
                     costTable[origin][dest] = 1    
                 else:
                     costTable[origin][dest] = 0
-            
-            #Real cost in number of stops            
+                             
             else:
+                #Returns real cost in number of stops from orgin to dest
                 if stationList[origin - 1].name != stationList[dest -1].name:
                     costTable[origin][dest] = 1
                     
