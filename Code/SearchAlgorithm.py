@@ -202,11 +202,7 @@ def setCostTable( typePreference, stationList,city):
             - costTable: DICTIONARY. Relates each station with their adjacency an their g, depending on the
                                  type of Preference Selected.
     """
-    #TODO find out why these values are changed
-    stationList[12].destinationDic[14] = 21.3732854482  
-    stationList[13].destinationDic[13] = 21.3732854482
-                
-                 
+
     if typePreference == 0:
         return city.adjacency
     
