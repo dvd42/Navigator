@@ -10,7 +10,6 @@ __group__='DX18.03'
 # _______________________________________________________________________________________
 
 from SubwayMap import *
-from SubwayMap import *
 import math as m
 
 
@@ -120,7 +119,7 @@ class Node:
 
 
 def Expand(fatherNode, stationList, typePreference, node_destination, costTable,city):
-     """
+    """
         Expand: It expands a node and returns the list of connected stations (childrenList)
         :params
                 - fatherNode: NODE of the current node that should be expanded
@@ -139,9 +138,9 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
                 - childrenList:  LIST of the set of child Nodes for this current node (fatherNode)
     """
     nodeList = []
-
     # For each adjacent node to fatherNode we create a new node and give it the real values it would have given its adjacency to fatherNode 
     for station in fatherNode.station.destinationDic:
+        print station
         node = Node(stationList[station -1], fatherNode) 
         node.setHeuristic(typePreference,node_destination,city)
         node.setRealCost(costTable)
@@ -155,21 +154,21 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
 
         if node.station.line == fatherNode.station.line:
             time = ctime[fatherNode.station.id][node.station.id]
+            
+            node.transfers = fatherNode.transfers
+
             node.walk = fatherNode.walk + (time*city.velocity_lines[fatherNode.station.line - 1]) # Get real distance from the origin to the actual node
         else:
             #A transfer does not counts as distance moved by the metro so we dont add anything to the walk value. It will be the same as it was in the fatherNode
             node.walk = fatherNode.walk
 
+            node.transfers = fatherNode.transfers + 1
+
 
         if node.station.name == fatherNode.station.name:
             node.num_stopStation = fatherNode.num_stopStation
         else:
-            node.num_stopStation = fatherNode.num_stopStation + 1
-
-        if fatherNode.station.line == node.station.line:
-            node.transfers = fatherNode.transfers
-        else:
-            node.transfers = fatherNode.transfers + 1
+            node.num_stopStation = fatherNode.num_stopStation + 1            
 
     return nodeList
 
