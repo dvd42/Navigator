@@ -323,6 +323,3 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
             len(expandedList), len(idsOptimalPath), visitedNodes, idsOptimalPath, min_distance_origin,
             min_distance_destination
     """
-
-    
-
