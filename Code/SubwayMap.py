@@ -4,8 +4,8 @@
 # - Read functions from files
 # - Structure of the information
 #
-__authors__='TO_BE_FILLED'
-__group__='DL01'
+__authors__='Diego Velazquez Dorta, Yael Tudela Barroso, Qiang Chen'
+__group__='DX18.03'
 # _________________________________________________________________________________________
 # Intel.ligencia Artificial
 # Grau en Enginyeria Informatica

@@ -137,10 +137,41 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
                 - city: CITYINFO with the information of the city (see CityInfo class definition)
         :returns
                 - childrenList:  LIST of the set of child Nodes for this current node (fatherNode)
-
     """
-    
-    
+    nodeList = []
+
+    # For each adjacent node to fatherNode we create a new node and give it the real values it would have given its adjacency to fatherNode 
+    for station in fatherNode.station.destinationDic:
+        node = Node(stationList[station -1], fatherNode) 
+        node.setHeuristic(typePreference,node_destination,city)
+        node.setRealCost(costTable)
+        node.setEvaluation()
+        nodeList.append(node)
+
+         
+        ctime = setCostTable(1, stationList, city)
+        # Get cost in time from origin to fatherNode + time from fatherNode to current node
+        node.time = fatherNode.time + ctime[fatherNode.station.id][node.station.id] 
+
+        if node.station.line == fatherNode.station.line:
+            time = ctime[fatherNode.station.id][node.station.id]
+            node.walk = fatherNode.walk + (time*city.velocity_lines[fatherNode.station.line - 1]) # Get real distance from the origin to the actual node
+        else:
+            #A transfer does not counts as distance moved by the metro so we dont add anything to the walk value. It will be the same as it was in the fatherNode
+            node.walk = fatherNode.walk
+
+
+        if node.station.name == fatherNode.station.name:
+            node.num_stopStation = fatherNode.num_stopStation
+        else:
+            node.num_stopStation = fatherNode.num_stopStation + 1
+
+        if fatherNode.station.line == node.station.line:
+            node.transfers = fatherNode.transfers
+        else:
+            node.transfers = fatherNode.transfers + 1
+
+    return nodeList
 
 
 
@@ -209,9 +240,9 @@ def setCostTable( typePreference, stationList,city):
         return city.adjacency
     
     costTable = {}
-    for origin in city.adjacency.keys():
+    for origin in city.adjacency:
         costTable[origin] = {}
-        for dest in city.adjacency[origin].keys():
+        for dest in city.adjacency[origin]:
             
             if typePreference == 1:
                 # Returns real cost in time from origin to dest        
