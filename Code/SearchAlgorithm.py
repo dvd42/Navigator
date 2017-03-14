@@ -140,7 +140,6 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
     nodeList = []
     # For each adjacent node to fatherNode we create a new node and give it the real values it would have given its adjacency to fatherNode 
     for station in fatherNode.station.destinationDic:
-        print station
         node = Node(stationList[station -1], fatherNode) 
         node.setHeuristic(typePreference,node_destination,city)
         node.setRealCost(costTable)
@@ -157,7 +156,8 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
             
             node.transfers = fatherNode.transfers
 
-            node.walk = fatherNode.walk + (time*city.velocity_lines[fatherNode.station.line - 1]) # Get real distance from the origin to the actual node
+            # Get real distance from the origin to the actual node
+            node.walk = fatherNode.walk + (time*city.velocity_lines[fatherNode.station.line - 1]) 
         else:
             #A transfer does not counts as distance moved by the metro so we dont add anything to the walk value. It will be the same as it was in the fatherNode
             node.walk = fatherNode.walk
@@ -183,8 +183,13 @@ def RemoveCycles(childrenList):
                 - listWithoutCycles:  LIST of the set of child Nodes for a certain Node which not includes cycles
     """
 
+    listWithoutCycles = []
+    for node in childrenList:
+        if node.station.id not in node.parentsID:
+            listWithoutCycles.append(node)
 
-
+    return listWithoutCycles              
+    
 
 def RemoveRedundantPaths(childrenList, nodeList, partialCostTable):
     """
@@ -202,13 +207,30 @@ def RemoveRedundantPaths(childrenList, nodeList, partialCostTable):
                 - nodeList: LIST of NODES to be visited updated (without redundant paths)
                 - partialCostTable: DICTIONARY of the minimum g to get each key (Node) from the origin Node (updated)
     """
+    nodesVisited = []
+    g = nodeList[0].g
+    for node in nodeList:
+         nodesVisited.append(node)
+         partialCostTable[node.station.id] = node.g
+    
+    for child in childrenList:
+        partialCostTable[child.station.id] = child.g
+        if child in nodesVisited:
+            if child.g <= partialCostTable[child.station.id] or child in partialCostTable:
+                partialCostTable[child] = child.g
+            else:
+                childrenList.remove(child)
+                nodeList.remove(child)
 
+    return childrenList, nodeList, partialCostTable                  
+    
 
 
 def sorted_insertion(nodeList,childrenList):
 	""" Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
 							The insertion must be sorted depending on the evaluation function value.
 							
+
 		: params:
 			- nodeList : LIST of NODES to be visited
 			- childrenList: LIST of NODES, set of childs that should be studied if they contain rendundant path
@@ -285,6 +307,25 @@ def coord2station(coord, stationList):
             station
     """
 
+    proximityList = []
+    #Calculate distance from coords x and y to all stations
+    for station in stationList:
+        distance = abs(coord[0] - station.x) + abs(coord[1] - station.y)
+        proximityList.append((distance,station.id -1))
+
+    #Sort stations by distance increasingly
+    proximityList.sort(key = lambda tup: tup[0])
+    closest = []
+    dist = float('inf')
+    #Select the closest/s station/s 
+    for t in proximityList:
+        if(t[0] <= dist):
+            dist = t[0]
+            closest.append(t[1])
+
+    return closest
+
+    
 
 def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,city,flag_redundants):
     """
