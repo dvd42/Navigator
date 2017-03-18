@@ -140,7 +140,6 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
     nodeList = []
     # For each adjacent node to fatherNode we create a new node and give it the real values it would have given its adjacency to fatherNode 
     for station in fatherNode.station.destinationDic:
-        print station
         node = Node(stationList[station -1], fatherNode) 
         node.setHeuristic(typePreference,node_destination,city)
         node.setRealCost(costTable)
