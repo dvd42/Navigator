@@ -1,5 +1,5 @@
 diff a/Code/SearchAlgorithm.py b/Code/SearchAlgorithm.py	(rejected hunks)
-@@ -202,44 +202,22 @@
+@@ -202,41 +202,8 @@
                  - partialCostTable: DICTIONARY of the minimum g to get each key (Node) from the origin Node (updated)
      """
  
@@ -38,21 +38,6 @@ diff a/Code/SearchAlgorithm.py b/Code/SearchAlgorithm.py	(rejected hunks)
 -    nodeList.sort(key=lambda node: node.f)
 -
 -    return nodeList
-+def sorted_insertion(nodeList,childrenList):
-+	""" Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
-+							The insertion must be sorted depending on the evaluation function value.
-+							
-+		: params:
-+			- nodeList : LIST of NODES to be visited
-+			- childrenList: LIST of NODES, set of childs that should be studied if they contain rendundant path
-+                                or not.
-+		:returns
-+                - nodeList: sorted LIST of NODES to be visited updated with the childrenList included 
-+	"""
- 
- 
--def setCostTable(typePreference, stationList, city):
-+def setCostTable( typePreference, stationList,city):
-     """
-     setCostTable :      Real cost of a travel.
-     :param
+ def sorted_insertion(nodeList,childrenList):
+ 	""" Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
+ 							The insertion must be sorted depending on the evaluation function value.

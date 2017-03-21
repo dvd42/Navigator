@@ -28,6 +28,7 @@ class Node:
                                     # to get from the origin to this Node
         self.h = 0                 # REAL heuristic value to get from the origin to this Node
         self.f = 0                  # REAL evaluate function
+<<<<<<< HEAD
         if father ==None:
 			self.parentsID=[]
         else:
@@ -43,6 +44,25 @@ class Node:
         self.transfers = 0          # INTEGER number of transfers made from the origin to this Node
                                     # [optional] Only useful for GUI
 
+=======
+        if father == None:
+			self.parentsID = []
+        else:
+			self.parentsID = [father.station.id]
+			# TUPLE OF NODES (from the origin to its father)
+			self.parentsID.extend(father.parentsID)
+        self.father = father                                 # NODE pointer to his father
+        self.time = 0               # REAL time required to get from the origin to this Node
+                                    # [optional] Only useful for GUI
+        # INTEGER number of stops stations made from the origin to this Node
+        self.num_stopStation = 0
+                                    # [optional] Only useful for GUI
+        self.walk = 0               # REAL distance made from the origin to this Node
+                                    # [optional] Only useful for GUI
+        # INTEGER number of transfers made from the origin to this Node
+        self.transfers = 0
+                                    # [optional] Only useful for GUI
+>>>>>>> parent of 014f55a... Navigator
 
     def setEvaluation(self):
         """
@@ -82,15 +102,26 @@ class Node:
             distance2 = (self.station.y - node_destination.station.y)**2
             
             self.h = m.sqrt(distance1 + distance2)
+<<<<<<< HEAD
            
         #Transfers Preference
         elif typePreference == 3: 
+=======
+
+        # Transfers Preference
+        elif typePreference == 3:
+>>>>>>> parent of 014f55a... Navigator
            if self.station.line != node_destination.station.line:
                 self.h = 1
            else:
                self.h = 0
+<<<<<<< HEAD
         
         #Stops Preference
+=======
+
+        # Stops Preference
+>>>>>>> parent of 014f55a... Navigator
         elif typePreference == 4:
             if self.station.name == node_destination.station.name:
                 self.h = 0
@@ -116,6 +147,12 @@ class Node:
               self.g = costTable[self.father.station.id][self.station.id]+self.father.g 
         
 
+<<<<<<< HEAD
+=======
+        if self.father != None:
+              self.g = costTable[self.father.station.id][
+                  self.station.id] + self.father.g
+>>>>>>> parent of 014f55a... Navigator
 
 
 def Expand(fatherNode, stationList, typePreference, node_destination, costTable,city):
@@ -148,8 +185,15 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
 
          
         ctime = setCostTable(1, stationList, city)
+<<<<<<< HEAD
         # Get cost in time from origin to fatherNode + time from fatherNode to current node
         node.time = fatherNode.time + ctime[fatherNode.station.id][node.station.id] 
+=======
+        # Get cost in time from origin to fatherNode + time from fatherNode to
+        # current node
+        node.time = fatherNode.time + \
+            ctime[fatherNode.station.id][node.station.id]
+>>>>>>> parent of 014f55a... Navigator
 
         if node.station.line == fatherNode.station.line:
             time = ctime[fatherNode.station.id][node.station.id]
@@ -158,7 +202,13 @@ def Expand(fatherNode, stationList, typePreference, node_destination, costTable,
 
             node.walk = fatherNode.walk + (time*city.velocity_lines[fatherNode.station.line - 1]) # Get real distance from the origin to the actual node
         else:
+<<<<<<< HEAD
             #A transfer does not counts as distance moved by the metro so we dont add anything to the walk value. It will be the same as it was in the fatherNode
+=======
+            # A transfer does not counts as distance moved by the metro so we
+            # dont add anything to the walk value. It will be the same as it
+            # was in the fatherNode
+>>>>>>> parent of 014f55a... Navigator
             node.walk = fatherNode.walk
 
             node.transfers = fatherNode.transfers + 1
@@ -202,6 +252,7 @@ def RemoveRedundantPaths(childrenList, nodeList, partialCostTable):
                 - partialCostTable: DICTIONARY of the minimum g to get each key (Node) from the origin Node (updated)
     """
 
+<<<<<<< HEAD
 
 
 def sorted_insertion(nodeList,childrenList):
@@ -215,6 +266,46 @@ def sorted_insertion(nodeList,childrenList):
 		:returns
                 - nodeList: sorted LIST of NODES to be visited updated with the childrenList included 
 	"""
+=======
+    #TODO this function
+
+    nodesVisited = []
+    for node in nodeList:
+         nodesVisited.append(node)
+         partialCostTable[node.station.id] = node.g
+
+    for child in childrenList:
+        partialCostTable[child.station.id] = child.g
+        if child in nodesVisited:
+            if child.g <= partialCostTable[child.station.id]:
+                partialCostTable[child] = child.g
+            else:
+                childrenList.remove(child)
+                nodeList.remove(child)
+
+    return childrenList, nodeList, partialCostTable
+
+
+def sorted_insertion(nodeList, childrenList):
+    """ Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
+    						The insertion must be sorted depending on the evaluation function value.
+
+
+    	: params:
+    		- nodeList : LIST of NODES to be visited
+    		- childrenList: LIST of NODES, set of childs that should be studied if they contain rendundant path
+                            or not.
+    	:returns
+            nodeList: sorted LIST of NODES to be visited updated with the childrenList included
+    """
+    for node in childrenList:
+        nodeList.append(node)
+    
+    #Sort nodeList incresingly by node.f
+    nodeList.sort(key = lambda node: node.f)
+
+    return nodeList
+>>>>>>> parent of 014f55a... Navigator
 
 
 def setCostTable( typePreference, stationList,city):
@@ -256,14 +347,22 @@ def setCostTable( typePreference, stationList,city):
                     costTable[origin][dest] = city.velocity_lines[stationList[origin - 1].line -1] * time
                 
             elif typePreference == 3:
+<<<<<<< HEAD
                 #Returns real cost in number of transfers from orgin to dest
+=======
+                # Returns real cost in number of transfers from orgin to dest
+>>>>>>> parent of 014f55a... Navigator
                 if stationList[origin - 1].line != stationList[dest -1].line:
                     costTable[origin][dest] = 1    
                 else:
                     costTable[origin][dest] = 0
                              
             else:
+<<<<<<< HEAD
                 #Returns real cost in number of stops from orgin to dest
+=======
+                # Returns real cost in number of stops from orgin to dest
+>>>>>>> parent of 014f55a... Navigator
                 if stationList[origin - 1].name != stationList[dest -1].name:
                     costTable[origin][dest] = 1
                     
@@ -284,6 +383,29 @@ def coord2station(coord, stationList):
             station
     """
 
+<<<<<<< HEAD
+=======
+    proximityList = []
+    # Calculate distance from coords x and y to all stations
+    for station in stationList:
+        distance = abs(coord[0] - station.x) + abs(coord[1] - station.y)
+        proximityList.append((distance,station.id -1))
+
+    # Sort stations by distance increasingly
+    proximityList.sort(key = lambda tup: tup[0])
+    closest = []
+    dist = float('inf')
+    
+    # Select the closest/s station/s 
+    for t in proximityList:
+        if(t[0] <= dist):
+            dist = t[0]
+            closest.append(t[1])
+
+    return closest
+
+    
+>>>>>>> parent of 014f55a... Navigator
 
 def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,city,flag_redundants):
     """
