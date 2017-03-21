@@ -1,0 +1,58 @@
+diff a/Code/SearchAlgorithm.py b/Code/SearchAlgorithm.py	(rejected hunks)
+@@ -202,44 +202,22 @@
+                 - partialCostTable: DICTIONARY of the minimum g to get each key (Node) from the origin Node (updated)
+     """
+ 
+-    for node in nodeList:
+-        for child in childrenList:
+-            partialCostTable[child.station.id] = child.g
+-
+-            if child.station.id == node.station.id:
+-                # If we find a new path to child with a better cost(g)
+-                # actualize this cost in TCP and remove child from childrenList
+-                if node.g < partialCostTable[child.station.id]:
+-                    partialCostTable[child.station.id] = node.g
+-                    childrenList.remove(child)
+-                else:
+-                    nodeList.remove(node)
+-
+-    return childrenList, nodeList, partialCostTable
+ 
+ 
+-def sorted_insertion(nodeList, childrenList):
+-    """ Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
+-                                                The insertion must be sorted depending on the evaluation function value.
+-
+-
+-        : params:
+-                - nodeList : LIST of NODES to be visited
+-                - childrenList: LIST of NODES, set of childs that should be studied if they contain rendundant path
+-                            or not.
+-        :returns
+-            nodeList: sorted LIST of NODES to be visited updated with the childrenList included
+-    """
+-    for node in childrenList:
+-        nodeList.append(node)
+-
+-    # Sort nodeList incresingly by node.f
+-    nodeList.sort(key=lambda node: node.f)
+-
+-    return nodeList
++def sorted_insertion(nodeList,childrenList):
++	""" Sorted_insertion: 	It inserts each of the elements of childrenList into the nodeList.
++							The insertion must be sorted depending on the evaluation function value.
++							
++		: params:
++			- nodeList : LIST of NODES to be visited
++			- childrenList: LIST of NODES, set of childs that should be studied if they contain rendundant path
++                                or not.
++		:returns
++                - nodeList: sorted LIST of NODES to be visited updated with the childrenList included 
++	"""
+ 
+ 
+-def setCostTable(typePreference, stationList, city):
++def setCostTable( typePreference, stationList,city):
+     """
+     setCostTable :      Real cost of a travel.
+     :param
