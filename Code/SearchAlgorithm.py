@@ -113,8 +113,7 @@ class Node:
         """
 
         if self.father != None:
-            self.g = costTable[self.father.station.id][
-                self.station.id] + self.father.g
+            self.g = costTable[self.father.station.id][self.station.id] + self.father.g
 
 
 def Expand(fatherNode, stationList, typePreference, node_destination, costTable, city):
@@ -237,8 +236,7 @@ def sorted_insertion(nodeList, childrenList):
         :returns
             nodeList: sorted LIST of NODES to be visited updated with the childrenList included
     """
-    for node in childrenList:
-        nodeList.append(node)
+    nodeList += childrenList
 
     # Sort nodeList incresingly by node.f
     nodeList.sort(key=lambda node: node.f)
@@ -373,3 +371,47 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
             len(expandedList), len(idsOptimalPath), visitedNodes, idsOptimalPath, min_distance_origin,
             min_distance_destination
     """
+
+    typePreference=int(typePreference)
+    path = []
+    TCP = {}
+    children = []
+    ids = []
+    fullPath = []
+    expandenNodes = 0
+
+    #Set our CostTable depending on the slected preference and get the origin and destination nodes
+    costTable = setCostTable(typePreference, stationList, city)
+    indexOrigin=coord2station(coord_origin,stationList)
+    indexDestination=coord2station(coord_destination,stationList)
+    origin = Node(stationList[indexOrigin[0]], None)
+    destination = Node(stationList[indexDestination[0]],None)
+
+    #Get walking distance from origin to origin_station and from destination to destination_station
+    min_distance_destination = abs(destination.station.x - coord_destination[0]) + abs(destination.station.y - coord_destination[1]) 
+    min_distance_origin = abs(origin.station.x - coord_origin[0]) + abs(origin.station.y - coord_origin[1]) 
+    
+    #We apply the A* algorithm to find an optimal path to the destination 
+    path.append([origin])
+    while path[0][0].station.name != destination.station.name or not path:
+        head = path[0]
+        children = Expand(head[0],stationList,typePreference,destination,costTable,city)
+        expandenNodes += 1
+        children = RemoveCycles(children)
+        children, head[1::], TCP = RemoveRedundantPaths(children,head[1::],TCP)
+        path[0] = sorted_insertion(children,head[1::])
+        fullPath.append(path[0][0])
+    
+
+    #Get the ID of every node that has been visited
+    for node in fullPath:
+        ids.append(node.station.id)
+    
+    #Insert destination into the optimal path so it shows on GUI
+    fullPath[-1].parentsID.insert(0,destination.station.id)
+
+    if path:
+        return fullPath[-1].time, fullPath[-1].walk, fullPath[-1].transfers, fullPath[-1].num_stopStation, expandenNodes, len(ids),ids, \
+               list(reversed(fullPath[-1].parentsID)), min_distance_origin,min_distance_destination
+    else:
+        print "Sorry we couldnt find a route to that destion"           
