@@ -389,7 +389,8 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
 
     #Get walking distance from origin to origin_station and from destination to destination_station
     min_distance_destination = abs(destination.station.x - coord_destination[0]) + abs(destination.station.y - coord_destination[1]) 
-    min_distance_origin = abs(origin.station.x - coord_origin[0]) + abs(origin.station.y - coord_origin[1]) 
+    min_distance_origin = abs(origin.station.x - coord_origin[0]) + abs(origin.station.y - coord_origin[1])
+
     
     #We apply the A* algorithm to find an optimal path to the destination 
     path.append([origin])
@@ -401,7 +402,6 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
         children, head[1::], TCP = RemoveRedundantPaths(children,head[1::],TCP)
         path[0] = sorted_insertion(children,head[1::])
         fullPath.append(path[0][0])
-    
 
     #Get the ID of every node that has been visited
     for node in fullPath:
@@ -414,4 +414,4 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
         return fullPath[-1].time, fullPath[-1].walk, fullPath[-1].transfers, fullPath[-1].num_stopStation, expandenNodes, len(ids),ids, \
                list(reversed(fullPath[-1].parentsID)), min_distance_origin,min_distance_destination
     else:
-        print "Sorry we couldnt find a route to that destion"           
+        print "Sorry we couldnt find a route to that destination"           

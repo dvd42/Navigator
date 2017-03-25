@@ -107,7 +107,7 @@ def readCostTable(filename):
         informations = i.split('\t')
         destination = 1 # because ID of the stations started at '1' instead of '0'
         for j in informations:
-            j = j.replace('\r\n', '')
+            j = j.replace('\n', '')
             if j != '':
                 if j != '0':
                     if connections.has_key(int(origin)) == False:
