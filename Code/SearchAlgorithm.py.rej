@@ -1,4 +1,4 @@
-diff a/Code/SearchAlgorithm.py b/Code/SearchAlgorithm.py	(rejected hunks)
+iff a/Code/SearchAlgorithm.py b/Code/SearchAlgorithm.py	(rejected hunks)
 @@ -202,41 +202,8 @@
                  - partialCostTable: DICTIONARY of the minimum g to get each key (Node) from the origin Node (updated)
      """

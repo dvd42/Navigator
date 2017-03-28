@@ -389,8 +389,7 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
 
     #Get walking distance from origin to origin_station and from destination to destination_station
     min_distance_destination = abs(destination.station.x - coord_destination[0]) + abs(destination.station.y - coord_destination[1]) 
-    min_distance_origin = abs(origin.station.x - coord_origin[0]) + abs(origin.station.y - coord_origin[1])
-
+    min_distance_origin = abs(origin.station.x - coord_origin[0]) + abs(origin.station.y - coord_origin[1]) 
     
     #We apply the A* algorithm to find an optimal path to the destination 
     path.append([origin])
@@ -402,11 +401,18 @@ def AstarAlgorithm(stationList, coord_origin, coord_destination, typePreference,
         children, head[1::], TCP = RemoveRedundantPaths(children,head[1::],TCP)
         path[0] = sorted_insertion(children,head[1::])
         fullPath.append(path[0][0])
+    
 
     #Get the ID of every node that has been visited
     for node in fullPath:
         ids.append(node.station.id)
     
+    #If we select the same origin and destination return the appropriate values
+    if len(path[0]) == 1:
+        return path[0][0].time, path[0][0].walk, path[0][0].transfers, path[0][0].num_stopStation, 0,1,path[0][0].station.id, \
+               [path[0][0].station.id], min_distance_origin,min_distance_destination
+
+
     #Insert destination into the optimal path so it shows on GUI
     fullPath[-1].parentsID.insert(0,destination.station.id)
 
